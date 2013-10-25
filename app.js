@@ -51,6 +51,8 @@ function setup() {
 		airports.den.planes.push(newPlane);
 	}
 	airports.den.planes.push(new Plane('Jess\'s Fighter Jet', 2, 3000, 2000, 2000));
+	// add cessna plane
+	airports.den.planes.push(new Plane('Deb\'s Embraer 135', 21, 8000, 3900, 3500));
 
 	// create passengers going to msp
 	for(var i=0; i<5; i++) {
@@ -61,6 +63,16 @@ function setup() {
 	// create passengers going to lga
 	for(var i=0; i<10; i++) {
 		var newPassenger = new Passenger('Bob' + (i+1), 30+i, 160-i, airports.lga)
+		airports.den.travelers.push(newPassenger);
+	}
+	// create passengers going to lga
+	for(var i=0; i<10; i++) {
+		var newPassenger = new Passenger('Bertha' + (i+1), 20+i, 140-i, airports.lga)
+		airports.den.travelers.push(newPassenger);
+	}
+	// create passengers going to lga
+	for(var i=0; i<10; i++) {
+		var newPassenger = new Passenger('Pat' + (i+1), 20+i, 155-i, airports.lga)
 		airports.den.travelers.push(newPassenger);
 	}
 
@@ -111,13 +123,19 @@ app.post('/board', function(req, res) {
 	var destPassengers = _.where(allPassengers, { destination: destination })
 
 	var passengersBoarded = 0;
+	var totalWeight = 0;
 
 	// 6. of those, get the number we have room for
 	for(var i=0, len=destPassengers.length; i<len; i++) {
 		var pass = destPassengers[i];
 		var availableSeats = plane.seats - plane.passengers.length;
+
+		totalWeight += destPassengers[i].weight
+		
+		var availableWeight = plane.weightCapacity - totalWeight; 
+		
 		// 7. check capacity
-		if(availableSeats > 0) {
+		if(availableSeats > 0 && availableWeight >= destPassengers[i].weight ) {
 			// 8. push passengers onto plane
 			plane.passengers.push(pass);
 
@@ -131,8 +149,6 @@ app.post('/board', function(req, res) {
 			break;
 		}
 	}
-
-	// 10. Take Off!
 
 	res.send(passengersBoarded + ' passengers boarded to ' + destination.city + '!')
 })

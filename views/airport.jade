@@ -12,7 +12,7 @@ block content
 	h2 Travelers
 	ul
 		for passenger in airport.travelers
-			li #{passenger.name} is traveling to #{passenger.destination.city}.
+			li #{passenger.name} is traveling to #{passenger.destination.city}. Weight: #{passenger.weight} lbs.
 
 	h3 Boarding
 	form(method='post', action='/board')
@@ -25,4 +25,6 @@ block content
 				if dest.code != airport.code
 					option(value=dest.code) #{dest.city}
 		input(type='submit')
+
+	h4 Take Off!
 
