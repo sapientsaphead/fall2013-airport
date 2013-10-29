@@ -51,7 +51,6 @@ function setup() {
 		airports.den.planes.push(newPlane);
 	}
 	airports.den.planes.push(new Plane('Jess\'s Fighter Jet', 2, 3000, 2000, 2000));
-	// add cessna plane
 	airports.den.planes.push(new Plane('Deb\'s Embraer 135', 21, 8000, 3900, 3500));
 
 	// create passengers going to msp
@@ -129,21 +128,21 @@ app.post('/board', function(req, res) {
 	for(var i=0, len=destPassengers.length; i<len; i++) {
 		var pass = destPassengers[i];
 		var availableSeats = plane.seats - plane.passengers.length;
-
-		totalWeight += destPassengers[i].weight
-		
 		var availableWeight = plane.weightCapacity - totalWeight; 
 		
 		// 7. check capacity
 		if(availableSeats > 0 && availableWeight >= destPassengers[i].weight ) {
 			// 8. push passengers onto plane
 			plane.passengers.push(pass);
+			
+			totalWeight += destPassengers[i].weight;
 
 			// 9. remove passengers from airport
 			var index = origin.travelers.indexOf(pass);
 			origin.travelers.splice(index, 1);
 
 			passengersBoarded++;
+			
 		}
 		else {
 			break;
